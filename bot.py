@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Trading Mindset Bot — Candra
-Motivasi harian menuju Rp 1 Miliar | XAUUSD | NY Session
+Trading Mindset Bot
+5x notifikasi harian + quotes trading personal
 """
 
 import os, asyncio, random, logging
@@ -11,7 +11,7 @@ from telegram import Bot
 from telegram.ext import Application, CommandHandler, ContextTypes
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-BOT_TOKEN = os.environ.get("BOT_TOKEN", "8626750521:AAFC-voApZlqCd-uHhZNCaQQ5Gj9Kgjjegg")
+BOT_TOKEN = os.environ.get("BOT_TOKEN", "8626750521:AAHmreezrZlJRZ-ipUI0MPDtpgVIrrPAyKM")
 CHAT_ID   = os.environ.get("CHAT_ID",   "5488406480")
 WIB       = ZoneInfo("Asia/Jakarta")
 
@@ -20,359 +20,374 @@ log = logging.getLogger(__name__)
 
 SCHEDULE = [
     {"hour": 6,  "minute": 0,  "sesi": "pagi"},
-    {"hour": 10, "minute": 0,  "sesi": "siang"},
-    {"hour": 14, "minute": 0,  "sesi": "sore"},
-    {"hour": 20, "minute": 0,  "sesi": "pre_session"},
-    {"hour": 23, "minute": 0,  "sesi": "malam"},
+    {"hour": 10, "minute": 0,  "sesi": "quotes"},
+    {"hour": 14, "minute": 0,  "sesi": "quotes2"},
+    {"hour": 20, "minute": 0,  "sesi": "statistik"},
+    {"hour": 22, "minute": 0,  "sesi": "malam"},
 ]
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# PESAN — Semua berdasarkan trading plan Candra yang nyata
+# QUOTES BANK — Trading, Compounding, Risk Management, Mindset
 # ═══════════════════════════════════════════════════════════════════════════════
-PESAN = {
+QUOTES = {
 
-# ─────────────────────────────────────────────────────────────────────────────
-  "pagi": [
+  "risk_management": [
+    "💡 *Risk Management*\n\n"
+    "_\"The first rule of trading: never lose more than you planned to lose.\"_\n\n"
+    "Untukmu:\n"
+    "SL 25–30 pip sudah ditetapkan.\n"
+    "Risk Rp 500rb–1jt per trade sudah dihitung.\n\n"
+    "Aturan itu bukan batasan — itu *pelindung* menuju Rp 1 Miliar.",
 
-    "🌅 *Selamat pagi, Candra!*\n\n"
-    "Balance hari ini: *Rp 311 juta lebih.*\n"
-    "Target Oktober 2026: *Rp 1 Miliar.*\n\n"
-    "Jarak itu ditempuh bukan dengan 1 trade besar —\n"
-    "tapi dengan *ratusan malam yang konsisten.*\n\n"
-    "Malam ini cukup 1–2 trade yang sesuai plan.\n"
-    "Itu sudah cukup. Itu sudah *luar biasa.*\n\n"
-    "🕌 _Umroh untuk Bapak, Ibu, dan mertua — bayangkan wajah mereka._",
+    "🛡️ *Risk Management*\n\n"
+    "_\"Amateurs focus on profits. Professionals focus on risk.\"_\n\n"
+    "Kamu sudah buktikan ini:\n"
+    "Maret 2026 — WR hanya 35.3%, tapi *Profit Factor 2.60.*\n\n"
+    "Artinya risk management yang benar *mengalahkan* winrate tinggi.\n"
+    "Sistem kamu sudah terbukti. Percayai.",
 
-    "☀️ *Pagi, Candra!*\n\n"
-    "📊 *Fakta sistem kamu (Maret 2026):*\n"
-    "• WR: 35.3% — sudah profitable\n"
-    "• Profit Factor: 2.60 — sangat sehat\n"
-    "• RR 1:4 dengan Fibonacci 1.618\n\n"
-    "Artinya: dari 10 trade, *7 bisa loss* — tapi kamu tetap profit.\n\n"
-    "💡 Sistem ini bekerja. Tugas kamu hari ini hanya *satu:*\n"
-    "Jangan ganggu sistem yang sudah terbukti.\n\n"
-    "🛡️ _Jaga modal = jaga compounding = jaga impian._",
+    "⚖️ *Risk Management*\n\n"
+    "_\"It's not about being right or wrong —_\n"
+    "_it's about how much you make when right_\n"
+    "_and how little you lose when wrong.\"_\n"
+    "— George Soros\n\n"
+    "RR 1:4 dengan Fibonacci 1.618.\n"
+    "Setiap 1 loss = butuh 1 win untuk cover + profit.\n"
+    "Sistem ini *bekerja* untuk kamu.",
 
-    "🌄 *Compound itu ajaib, Candra.*\n\n"
-    "Kalau setiap bulan tumbuh 5% saja:\n"
-    "• April 2026: ~Rp 327 juta\n"
-    "• Juli 2026: ~Rp 380 juta\n"
-    "• Oktober 2026: *~Rp 1 Miliar* ✅\n\n"
-    "Tapi compound bekerja dengan satu syarat:\n"
-    "*Modal tidak boleh dibakar oleh overtrading.*\n\n"
-    "Ingat 23 Maret dan 1 April — overtrading adalah musuh terbesar.\n\n"
-    "🔑 _Disiplin hari ini = compound bulan depan._",
+    "🔐 *Risk Management*\n\n"
+    "_\"Survival is the most important thing in trading._\n"
+    "_You can't trade if you're out of capital.\"_\n\n"
+    "Framework drawdown kamu:\n"
+    "-5% → Review\n"
+    "-10% → Kurangi size\n"
+    "-15% → Stop 3 hari\n"
+    "-20% → Stop 1 minggu\n\n"
+    "Ini bukan aturan yang lemah — ini *kecerdasan* bisnis.",
 
-    "🌞 *Selamat pagi!*\n\n"
-    "📌 *7 Pelajaran Maret yang sudah kamu dokumentasi:*\n\n"
-    "Kamu sudah tahu masalahnya.\n"
-    "Kamu sudah tahu solusinya.\n"
-    "Kamu sudah pasang app blocker.\n"
-    "Kamu sudah buat trading plan.\n\n"
-    "Sekarang hanya butuh satu hal:\n"
-    "*Eksekusi konsisten — hari demi hari.*\n\n"
-    "Trader yang menang bukan yang paling pintar,\n"
-    "tapi yang paling *konsisten.*\n\n"
-    "🕌 _4 tiket Umroh menunggu di Oktober 2026._",
-
-    "🌤️ *Pagi ini, satu quotes untuk kamu:*\n\n"
-    "_\"Seorang trader profesional bukan yang tidak pernah loss —_\n"
-    "_tapi yang sudah menerima loss sebagai biaya berbisnis.\"_\n\n"
-    "SL kamu 25–30 pip.\n"
-    "Risk per trade: Rp 500rb (fase 1) → Rp 1jt (fase 2).\n"
-    "Itu sudah dihitung. Itu sudah *direncanakan.*\n\n"
-    "Kalau malam ini loss — itu bukan kegagalan.\n"
-    "Kegagalan hanya terjadi kalau kamu:\n"
-    "❌ Tidak pasang SL\n"
-    "❌ Revenge trade setelah loss\n"
-    "❌ Trade lebih dari 2x malam itu\n\n"
-    "🛡️ _Hindari 3 itu — kamu sudah menang._",
-
-    "☀️ *Candra, ingat ini setiap pagi:*\n\n"
-    "Kamu bukan trader yang sedang *mencoba.*\n"
-    "Kamu adalah trader yang sedang *membangun bisnis.*\n\n"
-    "Bisnis kamu:\n"
-    "• Produk: Eksekusi XAUUSD\n"
-    "• Modal kerja: Rp 311 juta\n"
-    "• Target revenue: Rp 1 Miliar\n"
-    "• Deadline: Oktober 2026\n"
-    "• Sistem: NY Session, max 2 trade, RR 1:4\n\n"
-    "Bisnis yang baik tidak butuh *keberuntungan.*\n"
-    "Butuh *sistem yang dijalankan dengan konsisten.*\n\n"
-    "🎯 _Jalankan bisnismu malam ini._",
-
+    "📉 *Risk Management*\n\n"
+    "_\"The key to trading success is emotional discipline._\n"
+    "_If intelligence were the key, there would be a lot more people making money.\"_\n"
+    "— Victor Sperandeo\n\n"
+    "IQ bukan penentu profit.\n"
+    "Disiplin menjalankan plan adalah penentu profit.\n\n"
+    "Kamu sudah punya plan. Tinggal *eksekusi konsisten.*",
   ],
 
-# ─────────────────────────────────────────────────────────────────────────────
-  "siang": [
+  "compounding": [
+    "📈 *Compounding*\n\n"
+    "_\"Compound interest is the eighth wonder of the world._\n"
+    "_He who understands it, earns it._\n"
+    "_He who doesn't, pays it.\"_\n"
+    "— Albert Einstein\n\n"
+    "Rp 311 juta + 5%/bulan × 6 bulan = *~Rp 417 juta*\n"
+    "Rp 311 juta + 5%/bulan × 12 bulan = *~Rp 557 juta*\n\n"
+    "Compound tidak butuh keajaiban — butuh *konsistensi.*",
 
-    "🔔 *Pengingat siang, Candra!*\n\n"
-    "NY Session masih *8 jam lagi.*\n\n"
-    "Jangan buka chart sekarang untuk cari setup —\n"
-    "itu hanya menguras energi mental untuk malam nanti.\n\n"
-    "💡 *Yang bisa dilakukan siang ini:*\n"
-    "□ Review jurnal kemarin\n"
-    "□ Cek kalender ekonomi malam ini\n"
-    "□ Istirahat dan isi energi\n\n"
-    "Trader terbaik tahu kapan harus *tidak* di depan chart.\n\n"
-    "🕐 _Simpan fokus untuk jam 20:30 WIB._",
+    "🧮 *Compounding*\n\n"
+    "Simulasi balance kamu:\n\n"
+    "Apr → Rp 327 juta\n"
+    "Mei → Rp 343 juta\n"
+    "Jun → Rp 360 juta\n"
+    "Jul → Rp 378 juta\n"
+    "Agu → Rp 397 juta\n"
+    "Sep → Rp 417 juta\n"
+    "Okt → *Rp 438 juta* 📈\n\n"
+    "_(asumsi 5%/bulan, tanpa withdrawal)_\n\n"
+    "Angka ini nyata kalau satu syarat terpenuhi:\n"
+    "*Modal tidak dirusak oleh overtrading.*",
 
-    "☀️ *Siang hari — saatnya evaluasi singkat:*\n\n"
-    "📅 *Statistik Candra berdasarkan hari:*\n"
-    "• Jumat: WR ~62.5% ← *terbaik*\n"
-    "• Rabu: Hati-hati (Crude Oil Report)\n"
-    "• Senin–Kamis: Normal, ikuti setup\n\n"
-    "Kalau hari ini Rabu → pertimbangkan skip atau perketat filter.\n"
-    "Kalau hari ini Jumat → *ini peluang terbaik mingguan.*\n\n"
-    "Data tidak berbohong. Gunakan ini.\n\n"
-    "🎯 _Trading berdasarkan data, bukan feeling._",
+    "💰 *Compounding*\n\n"
+    "_\"The stock market is a device for transferring money_\n"
+    "_from the impatient to the patient.\"_\n"
+    "— Warren Buffett\n\n"
+    "Terjemahan untuk XAUUSD:\n"
+    "Market mentransfer uang dari trader *impulsif*\n"
+    "ke trader yang *sabar menunggu setup.*\n\n"
+    "Kesabaranmu = profit jangka panjang.",
 
-    "💭 *Quote siang untuk Candra:*\n\n"
+    "🌱 *Compounding*\n\n"
+    "_\"Small consistent gains compound into massive wealth._\n"
+    "_You don't need home runs — just don't strike out.\"_\n\n"
+    "Profit Factor 2.60 di Maret adalah bukti:\n"
+    "Kamu tidak perlu win besar setiap malam.\n"
+    "Cukup *konsisten, disiplin, dan jaga modal.*\n\n"
+    "Rp 1 Miliar = ratusan malam seperti itu.",
+
+    "⏳ *Compounding*\n\n"
+    "_\"Time in the market beats timing the market.\"_\n\n"
+    "Untuk trader: *Konsistensi mengalahkan strategi sempurna.*\n\n"
+    "Kamu tidak perlu:\n"
+    "❌ Setup sempurna setiap malam\n"
+    "❌ Win setiap trade\n"
+    "❌ Profit setiap bulan\n\n"
+    "Kamu hanya perlu:\n"
+    "✅ Jalankan sistem\n"
+    "✅ Jaga modal\n"
+    "✅ Biarkan compound bekerja",
+  ],
+
+  "mindset": [
+    "🧠 *Mindset*\n\n"
+    "_\"The most important quality for an investor is temperament,_\n"
+    "_not intellect.\"_\n"
+    "— Warren Buffett\n\n"
+    "Trader yang berhasil bukan yang paling pintar analisis.\n"
+    "Tapi yang paling *stabil emosinya* saat market bergerak liar.\n\n"
+    "Trading Block extension sudah dipasang.\n"
+    "Sistem sudah ada. Tinggal *jaga temperamen.*",
+
+    "💪 *Mindset*\n\n"
+    "_\"Win or lose, everybody gets what they want out of the market._\n"
+    "_Some people seem to want to lose,_\n"
+    "_so they win by losing money.\"_\n"
+    "— Ed Seykota\n\n"
+    "Pastikan yang 'inginkan' dari market:\n"
+    "✅ Profit yang konsisten\n"
+    "✅ Disiplin yang terjaga\n"
+    "✅ Modal yang bertumbuh\n\n"
+    "Bukan validasi. Bukan sensasi. Bukan excitement.",
+
+    "🎯 *Mindset*\n\n"
     "_\"The goal of a successful trader is to make the best trades._\n"
     "_Money is secondary.\"_\n"
     "— Alexander Elder\n\n"
-    "Terjemahan untuk plan kamu:\n"
-    "Kalau malam ini kamu *skip* karena tidak ada setup bagus —\n"
-    "itu adalah *trade terbaik* yang bisa kamu buat.\n\n"
-    "Profit otomatis mengikuti keputusan yang benar.\n\n"
-    "📊 _WR 35.3% dengan PF 2.60 — buktinya sudah ada._",
+    "Kalau malam ini skip karena tidak ada setup —\n"
+    "itu adalah *trade terbaik* yang bisa dibuat.\n\n"
+    "Uang mengikuti keputusan yang benar.\n"
+    "Bukan sebaliknya.",
 
-    "🌿 *Istirahat sebentar, Candra.*\n\n"
-    "Perjalanan ke Rp 1 Miliar adalah *marathon,* bukan sprint.\n\n"
-    "Bayangkan:\n"
-    "• Mei 2026: Mulai scaling risk ke 0.5% equity\n"
-    "• Juni 2026: Mulai partial TP strategy\n"
-    "• Juli 2026: Evaluasi London session\n"
-    "• Pertengahan 2026: *Mulai withdrawals untuk Umroh*\n"
-    "• Oktober 2026: Target Rp 1 Miliar tercapai\n\n"
-    "Setiap hari yang kamu jalani dengan disiplin\n"
-    "adalah satu hari dalam peta perjalanan ini.\n\n"
-    "🕌 _Kamu sedang dalam perjalanan yang benar._",
+    "🔥 *Mindset*\n\n"
+    "_\"Trading is 10% strategy and 90% psychology.\"_\n\n"
+    "Sistem XAUUSD Sudah terbukti (PF 2.60).\n"
+    "Strategi sudah 90% selesai.\n\n"
+    "Yang menentukan Oktober 2026:\n"
+    "Apakah *psikologi* bisa konsisten\n"
+    "menjalankan sistem itu malam demi malam.\n\n"
+    "Jawabannya ada di tangan .",
 
-    "📊 *Komponen sistem Candra (reminder):*\n\n"
-    "⏰ Entry: NY Session 20:30–22:30 WIB\n"
-    "🎯 TP: Fibonacci 1.618\n"
-    "🛡️ SL: 25–30 pip\n"
-    "⚖️ RR Target: 1:4\n"
-    "🔢 Max trade: 2 per malam\n"
-    "💰 Risk/trade: Rp 500rb (s/d 11 Apr) → Rp 1jt (12 Apr+)\n\n"
-    "Sistem ini sudah *menghasilkan +Rp 11.3jt di Maret.*\n\n"
-    "Tugas kamu bukan menemukan sistem baru.\n"
-    "Tugas kamu adalah *menjalankan sistem ini dengan sempurna.*\n\n"
-    "🔑 _Jangan ubah yang sudah terbukti bekerja._",
+    "🌟 *Mindset*\n\n"
+    "_\"Every loss is a tuition fee for your trading education._\n"
+    "_The question is: are you learning from it?\"_\n\n"
+    "7 pelajaran Maret sudah didokumentasi.\n"
+    "Overtrading 23 Maret dan 1 April sudah dianalisis.\n"
+    "Protokol Rabu sudah ditetapkan.\n\n"
+    "kamu sudah *belajar.* Sekarang saatnya *menerapkan.*",
 
-    "💡 *Siang ini, hitung bareng:*\n\n"
-    "Balance: Rp 311.3 juta\n"
-    "Target: Rp 1 Miliar\n"
-    "Sisa: Rp 688.7 juta\n\n"
-    "Dengan compound 5%/bulan:\n"
-    "Bulan 1 → Rp 327jt\n"
-    "Bulan 2 → Rp 343jt\n"
-    "Bulan 3 → Rp 360jt\n"
-    "Bulan 4 → Rp 378jt\n"
-    "Bulan 5 → Rp 397jt\n"
-    "Bulan 6 → *Rp 417jt* 🎯\n\n"
-    "Konsisten 5%/bulan = *Oktober 2026 tercapai.*\n\n"
-    "🧮 _Matematika tidak berbohong kalau sistemnya dijaga._",
-
+    "⚡ *Mindset*\n\n"
+    "_\"The market is not your enemy._\n"
+    "_Your biggest enemy is yourself.\"_\n\n"
+    "Musuh utama Kamu bukan:\n"
+    "❌ Market yang sulit\n"
+    "❌ Spread yang besar\n"
+    "❌ Setup yang tidak sempurna\n\n"
+    "Musuh utama adalah:\n"
+    "⚠️ FOMO\n"
+    "⚠️ Revenge trade\n"
+    "⚠️ Overtrading\n\n"
+    "Trading Block extension sudah membantu. *Percayai prosesnya.*",
   ],
 
-# ─────────────────────────────────────────────────────────────────────────────
-  "sore": [
+  "disiplin": [
+    "📌 *Disiplin*\n\n"
+    "_\"Discipline is the bridge between goals and accomplishment.\"_\n"
+    "— Jim Rohn\n\n"
+    "Goal kamu: Rp 1 Miliar — Oktober 2026\n"
+    "Accomplishment: Umroh untuk 4 orang keluarga\n\n"
+    "Jembatan di antara keduanya:\n"
+    "*Disiplin setiap malam, satu trade dalam satu waktu.*",
 
-    "🌇 *4 jam lagi NY Session buka!*\n\n"
-    "⚡ *Pre-session checklist Candra:*\n\n"
-    "□ Cek higher timeframe XAUUSD\n"
-    "□ Tandai support & resistance kunci\n"
-    "□ Identifikasi zona entry Fibonacci\n"
-    "□ Set alert harga — jangan nonton chart terus\n"
-    "□ Hitung lot size sesuai risk hari ini\n"
-    "□ Pastikan Trading Block extension aktif\n\n"
-    "Kalau semua done → *istirahat, nonton chart pas 20:30 WIB.*\n\n"
-    "🎯 _Persiapan 30 menit = ketenangan 2 jam trading._",
+    "🏆 *Disiplin*\n\n"
+    "_\"It's not the strongest who survive,_\n"
+    "_nor the most intelligent,_\n"
+    "_but the one most responsive to change.\"_\n"
+    "— Charles Darwin\n\n"
+    "Kamu sudah responsive:\n"
+    "✅ Skip entry jam buruk (0% WR)\n"
+    "✅ Hati-hati Rabu (Crude Oil)\n"
+    "✅ Maksimalkan Jumat (WR 62.5%)\n\n"
+    "Adaptasi berdasarkan data = *keunggulan nyata.*",
 
-    "🌆 *Sore hari — reminder plan April Candra:*\n\n"
-    "📅 *Fase 1 (1–11 April):* Risk Rp 500rb/trade\n"
-    "📅 *Fase 2 (12–30 April):* Risk Rp 1jt/trade\n\n"
-    "Kenapa bertahap? Karena:\n"
-    "✅ Bangun kembali kepercayaan diri\n"
-    "✅ Buktikan konsistensi dulu\n"
-    "✅ Baru scale up dengan tenang\n\n"
-    "Ini bukan kelemahan — ini *kecerdasan manajemen risiko.*\n\n"
-    "💪 _Trader smart scale up setelah terbukti, bukan sebelumnya._",
+    "🎖️ *Disiplin*\n\n"
+    "_\"The harder the conflict, the more glorious the triumph.\"_\n"
+    "— Thomas Paine\n\n"
+    "Malam-malam yang skip saat tidak ada setup —\n"
+    "Malam-malam yang stop setelah 2 trade —\n"
+    "Malam-malam yang tahan dari revenge trade —\n\n"
+    "Semua itu adalah *kemenangan yang tidak terlihat*\n"
+    "yang membangun Rp 1 Miliar secara diam-diam.",
 
-    "🏆 *Visualisasi sore hari:*\n\n"
-    "Pertengahan 2026 — Candra mulai withdrawal pertama.\n"
-    "Bukan untuk dipakai — tapi untuk ditabung ke dana Umroh.\n\n"
-    "4 orang:\n"
+    "⏰ *Disiplin Waktu*\n\n"
+    "_\"The secret of your future is hidden in your daily routine.\"_\n"
+    "— Mike Murdock\n\n"
+    "Rutinitas harian kamu:\n"
+    "• 20:00 — Siapkan chart XAUUSD\n"
+    "• 20:30 — NY session buka, scan setup\n"
+    "• 20:30–22:30 — Window trading\n"
+    "• 22:30 — Tutup platform, jurnal\n"
+    "• 23:00 — Evaluasi & istirahat\n\n"
+    "*Rutinitas ini = sistem yang menghasilkan Rp 1 Miliar.*",
+
+    "🔑 *Disiplin*\n\n"
+    "_\"We are what we repeatedly do._\n"
+    "_Excellence, then, is not an act, but a habit.\"_\n"
+    "— Aristotle\n\n"
+    "Kamu bukan trader yang kadang-kadang disiplin.\n"
+    "Kamu adalah trader yang *terbiasa* disiplin.\n\n"
+    "Setiap malam yang konsisten membangun identitas itu.\n"
+    "Dan identitas itu yang menghasilkan *Rp 1 Miliar.*",
+  ],
+
+  "umroh": [
+    "🕌 *Untuk Keluarga*\n\n"
+    "Di balik setiap malam yang trading dengan disiplin —\n"
+    "ada 4 orang yang belum tahu betapa kerasnya perjuangan ini.\n\n"
     "👴 Bapak\n"
     "👩 Ibu\n"
     "👴 Mertua laki-laki\n"
     "👩 Mertua perempuan\n\n"
-    "Mereka belum tahu seberapa keras Candra bekerja malam-malam ini.\n"
-    "Tapi hasilnya akan berbicara sendiri.\n\n"
-    "💫 _Setiap trade yang disiplin = selangkah lebih dekat ke momen itu._",
+    "Mereka akan tahu saat tiket Umroh itu ada di tangan mereka.\n\n"
+    "_Setiap pip yang dijaga = selangkah lebih dekat ke momen itu._",
 
-    "⚙️ *Framework 4 level drawdown Candra:*\n\n"
-    "🟡 -5%   → Review setup, evaluasi 1 hari\n"
-    "🟠 -10%  → Kurangi size 50%, cari penyebab\n"
-    "🔴 -15%  → Stop trading 3 hari, review total\n"
-    "⛔ -20%  → Stop trading 1 minggu, konsultasi\n\n"
-    "Ini bukan aturan yang mempersulit —\n"
-    "ini adalah *pelindung* yang menjaga Candra tetap di game.\n\n"
-    "Trader yang survive adalah trader yang bisa *bertahan* di drawdown.\n\n"
-    "🛡️ _Jaga drawdown = jaga masa depan._",
+    "🌙 *Motivasi Terdalam*\n\n"
+    "Rp 1 Miliar bukan angka.\n"
+    "Itu adalah:\n\n"
+    "🕌 Umroh untuk orang tua yang sudah membesarkan kamu\n"
+    "🕌 Umroh untuk mertua yang mempercayakan putrinya\n"
+    "📈 Modal untuk masa depan keluarga\n"
+    "🛡️ Keamanan finansial yang dibangun dengan benar\n\n"
+    "_Bayangkan momen itu setiap kali ingin revenge trade._",
 
-    "📈 *Sore ini, ingat: Jumat adalah harimu.*\n\n"
-    "WR Candra di hari Jumat: *~62.5%*\n\n"
-    "Kalau hari ini Jumat → *ini adalah setup terbaik minggu ini.*\n"
-    "Fokus maksimal. Persiapan matang. Eksekusi tenang.\n\n"
-    "Kalau hari ini bukan Jumat → simpan energi untuk Jumat.\n\n"
-    "_\"Trade the best, skip the rest.\"_\n\n"
-    "🎯 _Selektivitas adalah senjata trader yang profitable._",
+    "✨ *Visi Oktober 2026*\n\n"
+    "Pertengahan 2026 — Kamu mulai withdrawal pertama.\n"
+    "Bukan untuk dipakai sendiri.\n"
+    "Tapi untuk ditabung ke dana Umroh.\n\n"
+    "Setiap bulan, sedikit demi sedikit.\n"
+    "Sampai 4 tiket Umroh itu terbeli.\n\n"
+    "Dan semua ini dimulai dari *malam ini.*\n"
+    "Dari satu trade yang dieksekusi dengan benar.",
+  ],
+}
 
+# ═══════════════════════════════════════════════════════════════════════════════
+# PESAN SESI
+# ═══════════════════════════════════════════════════════════════════════════════
+PESAN = {
+  "pagi": [
+    "🌅 *Selamat pagi! ☀️*\n\n"
+    "Balance: *Rp 311+ juta*\n"
+    "Target: *Rp 1 Miliar — Oktober 2026*\n\n"
+    "Hari baru. Kesempatan baru untuk konsisten.\n\n"
+    "Ingat — bukan tentang berapa banyak trade hari ini.\n"
+    "Tapi seberapa *benar* eksekusinya.\n\n"
+    "🕌 _Umroh 4 orang menunggu di ujung perjalanan ini._",
+
+    "☀️ *Pagi!*\n\n"
+    "📊 *Fakta sistem kamu:*\n"
+    "• WR 35.3% — sudah profitable\n"
+    "• PF 2.60 — sangat sehat\n"
+    "• RR 1:4 — asimetri yang kuat\n\n"
+    "Dari 10 trade, *7 bisa loss* — tapi tetap profit.\n\n"
+    "Sistem ini bekerja. Tugas hari ini:\n"
+    "*Jangan ganggu yang sudah terbukti.*",
+
+    "🌄 *Compound pagi ini:*\n\n"
+    "Rp 311 juta × 5%/bulan:\n"
+    "• Bulan 1 → Rp 327 juta\n"
+    "• Bulan 3 → Rp 360 juta\n"
+    "• Bulan 6 → Rp 417 juta\n"
+    "• Bulan 9 → *~Rp 482 juta*\n\n"
+    "Satu syarat: *Modal tidak dirusak overtrading.*\n\n"
+    "🔑 _Disiplin hari ini = compound bulan depan._",
   ],
 
-# ─────────────────────────────────────────────────────────────────────────────
-  "pre_session": [
-
-    "🔔 *20:00 WIB — NY SESSION 30 MENIT LAGI!*\n\n"
-    "⚡ *Final checklist sebelum eksekusi:*\n\n"
-    "□ Setup XAUUSD sudah jelas?\n"
-    "□ Entry zone sudah ditandai?\n"
-    "□ SL 25–30 pip sudah dihitung?\n"
-    "□ TP di Fibonacci 1.618 sudah di-set?\n"
-    "□ Max 2 trade malam ini — sudah diingat?\n"
+  "sore": [
+    "🌇 *4 jam lagi NY Session!*\n\n"
+    "⚡ Checklist pre-session:\n"
+    "□ Analisa XAUUSD higher TF\n"
+    "□ Tandai support & resistance\n"
+    "□ Hitung lot size sesuai risk\n"
+    "□ Set alert harga\n"
     "□ Trading Block extension aktif?\n\n"
-    "✅ Semua siap → *Execute sesuai plan*\n"
-    "❌ Ada keraguan → *Skip dulu, tunggu setup lebih jelas*\n\n"
-    "🕌 _Bismillah — untuk keluarga, untuk Umroh, untuk masa depan._",
+    "✅ Semua siap → istirahat, buka chart jam 20:30\n\n"
+    "🎯 _Persiapan matang = eksekusi tenang._",
+
+    "🌆 *Reminder sore — Plan April:*\n\n"
+    "📅 Fase 1 (1–11 Apr): Risk Rp 500rb/trade\n"
+    "📅 Fase 2 (12–30 Apr): Risk Rp 1jt/trade\n\n"
+    "Bertahap bukan kelemahan.\n"
+    "Itu *kecerdasan manajemen risiko.*\n\n"
+    "Scale up setelah terbukti — bukan sebelumnya.",
+
+    "🏆 *Visualisasi sore:*\n\n"
+    "Pertengahan 2026 — Kamu buka rekening tabungan Umroh.\n"
+    "Setiap bulan, hasil withdrawal masuk ke sana.\n"
+    "Sampai 4 tiket Umroh terbeli.\n\n"
+    "Semua bermula dari malam ini.\n"
+    "Dari satu setup yang sabar ditunggu.\n\n"
+    "💫 _Setiap trade disiplin = selangkah ke momen itu._",
+  ],
+
+  "pre_session": [
+    "🔔 *20:00 WIB — 30 MENIT LAGI!*\n\n"
+    "⚡ Final checklist:\n"
+    "□ Setup XAUUSD sudah jelas?\n"
+    "□ SL 25–30 pip sudah dihitung?\n"
+    "□ TP Fibonacci 1.618 sudah di-set?\n"
+    "□ Max 2 trade — sudah diingat?\n"
+    "□ Extension Trading Block aktif?\n\n"
+    "✅ Siap → *Execute sesuai plan*\n"
+    "❓ Ragu → *Skip, tunggu setup lebih jelas*\n\n"
+    "🕌 _Bismillah — untuk keluarga._",
 
     "⏰ *Pre-session reminder:*\n\n"
-    "Jam 20:30 WIB — NY session buka (DST aktif).\n\n"
-    "Ingat protokol entry Candra:\n"
-    "• *Jangan entry sebelum 20:30 WIB*\n"
-    "• Window terbaik: 20:30–22:30 WIB\n"
-    "• Setelah 22:30 → pertimbangkan skip jika belum dapat setup\n\n"
-    "Disiplin waktu entry = salah satu edge terbesar yang kamu punya.\n\n"
-    "⏱️ _Waktu yang salah = setup yang salah, meski chart terlihat bagus._",
+    "Entry window: *20:30–22:30 WIB*\n\n"
+    "Protokol hari ini:\n"
+    "📅 Rabu → hati-hati crude oil, perketat filter\n"
+    "📅 Jumat → WR terbaik ~62.5%, fokus maksimal\n"
+    "📅 Lainnya → ikuti setup normal\n\n"
+    "🎯 _Trade berdasarkan data. Bukan feeling._",
 
-    "🌙 *Mindset pre-session:*\n\n"
-    "_\"Saya tidak perlu profit malam ini._\n"
-    "_Saya hanya perlu menjalankan plan malam ini.\"_\n\n"
-    "Profit adalah *hasil* dari eksekusi yang benar —\n"
-    "bukan tujuan per trade.\n\n"
-    "Tujuan per trade Candra:\n"
+    "🌙 *Mindset sebelum trading:*\n\n"
+    "_'Saya tidak perlu profit malam ini._\n"
+    "_Saya hanya perlu menjalankan plan malam ini.'_\n\n"
+    "Kalau 4 ini terpenuhi — malam ini *sukses:*\n"
     "✅ Entry sesuai setup\n"
     "✅ SL terpasang\n"
-    "✅ TP di 1.618 Fibonacci\n"
+    "✅ TP di 1.618\n"
     "✅ Max 2 trade\n\n"
-    "Kalau 4 itu terpenuhi — *malam ini sudah sukses,*\n"
-    "apapun hasilnya.\n\n"
-    "💪 _PF 2.60 itu nyata. Sistemnya bekerja. Percaya._",
-
-    "⚠️ *Cek hari ini — protokol khusus:*\n\n"
-    "📅 *Kalau hari ini RABU:*\n"
-    "→ Crude Oil Report malam ini\n"
-    "→ Tunda entry atau perketat filter\n"
-    "→ Kalau tidak yakin → *skip, ini keputusan terbaik*\n\n"
-    "📅 *Kalau hari ini JUMAT:*\n"
-    "→ WR historis kamu 62.5%\n"
-    "→ Fokus maksimal, ini hari terbaikmu\n\n"
-    "📅 *Hari lainnya:*\n"
-    "→ Follow setup normal, ikuti sistem\n\n"
-    "🎯 _Data adalah panduan. Feeling adalah musuh._",
-
-    "💫 *30 menit sebelum market buka:*\n\n"
-    "Bayangkan dua versi dirimu malam ini:\n\n"
-    "*Versi A:* Dapat 2 setup bagus, eksekusi tenang,\n"
-    "profit sesuai RR 1:4, tutup laptop jam 22:30.\n\n"
-    "*Versi B:* Tidak dapat setup bagus, sabar menunggu,\n"
-    "akhirnya *skip* malam ini, tidur lebih awal.\n\n"
-    "Kedua versi itu adalah *kemenangan.*\n\n"
-    "Yang kalah hanya satu:\n"
-    "❌ Overtrading karena bosan atau FOMO\n\n"
-    "🛡️ _Jaga diri dari Versi C — itulah tugas utama malam ini._",
-
+    "💪 _PF 2.60 itu nyata. Sistemnya bekerja._",
   ],
 
-# ─────────────────────────────────────────────────────────────────────────────
   "malam": [
-
-    "🌙 *Evaluasi malam — selesai trading?*\n\n"
-    "Ambil 10 menit untuk jurnal:\n\n"
+    "🌙 *Evaluasi malam:*\n\n"
+    "Ambil 5 menit untuk jurnal:\n"
     "□ Berapa trade malam ini?\n"
-    "□ Win atau loss?\n"
     "□ Setup sesuai plan?\n"
-    "□ Ada yang bisa diperbaiki?\n"
-    "□ Emosi terjaga?\n\n"
-    "📝 Tulis di jurnal — satu kalimat saja sudah cukup.\n\n"
-    "_Trader yang tidak jurnal tidak tahu kenapa mereka profit —_\n"
-    "_dan tidak tahu kenapa mereka loss._\n\n"
-    "🕌 _Selamat istirahat. Besok market buka lagi._",
+    "□ Emosi terjaga?\n"
+    "□ Apa yang bisa diperbaiki?\n\n"
+    "📝 Satu kalimat di jurnal sudah cukup.\n\n"
+    "🕌 _Selamat istirahat. Besok kita compound lagi._",
 
     "⭐ *Malam ini kamu sudah:*\n\n"
-    "✅ Menjalani satu hari lagi dalam perjalanan ke Rp 1M\n"
-    "✅ Menjaga modal dari keputusan impulsif\n"
-    "✅ Satu langkah lebih dekat ke Umroh keluarga\n\n"
-    "Apakah profit malam ini? → Syukuri.\n"
-    "Apakah loss malam ini? → Evaluasi, bukan menyesal.\n"
-    "Apakah skip malam ini? → *Ini keputusan terbaik jika tidak ada setup.*\n\n"
-    "Semua skenario di atas adalah *progress* —\n"
-    "selama kamu tidak melanggar plan.\n\n"
-    "💪 _Besok pagi kita mulai lagi. Konsisten._",
+    "✅ Satu hari lebih konsisten\n"
+    "✅ Satu hari lebih dekat ke Rp 1M\n"
+    "✅ Satu hari lebih dekat ke Umroh keluarga\n\n"
+    "Profit → Syukuri.\n"
+    "Loss → Evaluasi, bukan menyesal.\n"
+    "Skip → *Keputusan terbaik jika tidak ada setup.*\n\n"
+    "💪 _Besok pagi kita mulai lagi._",
 
-    "🌟 *Renungan malam — compound Candra:*\n\n"
-    "Rp 311 juta hari ini.\n\n"
-    "Kalau bulan ini +5% → Rp 327 juta\n"
-    "Kalau 3 bulan konsisten → Rp 360 juta\n"
-    "Kalau 6 bulan konsisten → Rp 417 juta\n"
-    "Kalau sampai Oktober konsisten → *Rp 1 Miliar* 🎯\n\n"
-    "Angka ini nyata. Matematika ini bekerja.\n"
-    "Tapi hanya kalau satu syarat terpenuhi:\n"
-    "*Modal tidak dirusak oleh keputusan buruk.*\n\n"
-    "Malam ini sudah selesai. Modal aman?\n"
-    "Kalau iya — *Alhamdulillah. Kamu menang malam ini.*\n\n"
-    "🕌 _Tidur yang cukup — besok kita compound lagi._",
-
-    "💰 *Progress tracker malam ini:*\n\n"
-    "🏁 Start April: Rp 311.3 juta\n"
-    "🎯 Target Oktober 2026: Rp 1 Miliar\n"
-    "📅 Sisa waktu: ~6 bulan\n\n"
-    "Yang perlu dijaga:\n"
-    "• Drawdown maksimal -20% (= Rp 62 juta)\n"
-    "• Loss streak 2x berturut → evaluasi, jangan lanjut\n"
-    "• Withdrawal mulai pertengahan 2026 untuk dana Umroh\n\n"
-    "_\"Kekayaan sejati bukan dibangun dalam semalam —_\n"
-    "_tapi dalam satu kebiasaan baik yang diulang setiap malam.\"_\n\n"
-    "🛌 _Istirahat. Besok adalah hari baru untuk compound._",
-
-    "🙏 *Sebelum tidur, syukuri 3 hal ini:*\n\n"
-    "1️⃣ *Modal masih aman?*\n"
-    "   → Alhamdulillah — compound masih bekerja\n\n"
-    "2️⃣ *Ikut plan malam ini?*\n"
-    "   → Alhamdulillah — sistem masih berjalan\n\n"
-    "3️⃣ *Tidak overtrading?*\n"
-    "   → Alhamdulillah — musuh terbesar sudah dikalahkan\n\n"
-    "Profit itu bonus yang menyenangkan.\n"
-    "*Disiplin itu tujuan yang sesungguhnya.*\n\n"
-    "🕌 _Selamat malam, Candra._\n"
-    "_Bapak, Ibu, dan mertua bangga dengan prosesmu —_\n"
-    "_bahkan sebelum Umroh itu terjadi._",
-
-    "🌙 *Quote penutup malam:*\n\n"
-    "_\"Jangan hitung profit hari ini._\n"
-    "_Hitung apakah kamu lebih baik dari kemarin._\"\n\n"
-    "Kemarin kamu sudah:\n"
-    "• Dokumentasi 7 pelajaran Maret\n"
-    "• Pasang Trading Block extension\n"
-    "• Buat plan April yang terstruktur\n"
-    "• Tetap trading meski ada tantangan\n\n"
-    "Candra yang sekarang *sudah lebih baik* dari sebelumnya.\n\n"
-    "Teruslah tumbuh — satu malam dalam satu waktu.\n\n"
-    "🎯 _Rp 1 Miliar. Oktober 2026. Umroh 4 orang._\n"
-    "_Bukan mimpi — ini *rencana yang sedang berjalan.*_",
-
+    "🌟 *Renungan malam:*\n\n"
+    "Modal aman malam ini?\n"
+    "→ *Alhamdulillah. Compound masih bekerja.*\n\n"
+    "Ikut plan malam ini?\n"
+    "→ *Alhamdulillah. Sistem masih berjalan.*\n\n"
+    "Tidak overtrading?\n"
+    "→ *Alhamdulillah. Musuh terbesar sudah dikalahkan.*\n\n"
+    "Profit itu bonus.\n"
+    "*Disiplin itu tujuan sesungguhnya.*\n\n"
+    "🕌 _Selamat malam._",
   ],
 }
 
@@ -382,10 +397,94 @@ def get_footer():
     hari = ["Senin","Selasa","Rabu","Kamis","Jumat","Sabtu","Minggu"][now.weekday()]
     return f"\n\n─────────────────\n📅 {hari}, {now.strftime('%d %b %Y')} | ⏰ {now.strftime('%H:%M')} WIB"
 
+STATISTIK = [
+    "📊 *Statistik Trading — Maret 2026*\n\n"
+    "💰 P&L      : *+Rp 11.300.000*\n"
+    "📈 Balance  : *Rp 311.300.000*\n"
+    "🎯 Win Rate : *35.3%*\n"
+    "⚖️ Profit Factor: *2.60*\n"
+    "🔢 Max Trade/malam: *2*\n"
+    "🛡️ SL       : *25–30 pip*\n"
+    "🎯 RR       : *1:4*\n\n"
+    "_Sistem ini sudah terbukti menghasilkan profit._\n"
+    "_Tugas malam ini: jalankan dengan konsisten._",
+
+    "🧮 *Simulasi Compound — 5%/bulan*\n\n"
+    "Apr 2026 → Rp 327.000.000\n"
+    "Mei 2026 → Rp 343.000.000\n"
+    "Jun 2026 → Rp 360.000.000\n"
+    "Jul 2026 → Rp 378.000.000\n"
+    "Agu 2026 → Rp 397.000.000\n"
+    "Sep 2026 → Rp 417.000.000\n"
+    "Okt 2026 → *Rp 438.000.000* 📈\n\n"
+    "_Satu syarat: modal tidak dirusak overtrading._\n"
+    "_Compound bekerja diam-diam setiap bulan._",
+
+    "📉 *Probabilitas Loss Streak*\n\n"
+    "Dengan WR 35.3%:\n\n"
+    "Loss 2x berturut → peluang *42%* — wajar\n"
+    "Loss 3x berturut → peluang *27%* — masih normal\n"
+    "Loss 4x berturut → peluang *17%* — evaluasi setup\n"
+    "Loss 5x berturut → peluang *11%* — stop, review total\n\n"
+    "_Loss streak bukan tanda sistem rusak._\n"
+    "_Tanda sistem rusak adalah melanggar plan saat loss._",
+
+    "📊 *Perbandingan WR vs Profit Factor*\n\n"
+    "WR 35% + PF 2.60 → *PROFITABLE* ✅\n"
+    "WR 50% + PF 1.00 → Break even ⚠️\n"
+    "WR 70% + PF 0.80 → *MERUGI* ❌\n\n"
+    "Kesimpulan:\n"
+    "*WR tinggi bukan jaminan profit.*\n"
+    "*RR yang baik adalah kuncinya.*\n\n"
+    "_RR 1:4 dengan SL 25–30 pip sudah tepat._\n"
+    "_Pertahankan asimetri ini._",
+
+    "🎯 *Progress Rp 1 Miliar*\n\n"
+    "▓▓▓▓▓▓░░░░░░░░░░░░░░ 31.1%\n\n"
+    "💰 Sekarang  : Rp 311.300.000\n"
+    "🎯 Target    : Rp 1.000.000.000\n"
+    "📈 Sisa      : Rp 688.700.000\n"
+    "⏳ Waktu     : ~6 bulan\n"
+    "📊 Butuh/bln : ~5% compound\n\n"
+    "_Setiap malam yang konsisten mengisi progress bar ini._\n"
+    "🕌 _Umroh 4 orang menunggu di ujung perjalanan._",
+
+    "⚡ *Risk Per Trade — Dampak ke Balance*\n\n"
+    "Balance: Rp 311.300.000\n\n"
+    "Fase 1 (s/d 11 Apr):\n"
+    "Risk Rp 500rb = *0.16% balance* — sangat aman\n\n"
+    "Fase 2 (12 Apr+):\n"
+    "Risk Rp 1jt = *0.32% balance* — masih konservatif\n\n"
+    "Drawdown -20% = Rp 62.260.000\n"
+    "Butuh *62 loss berturut* untuk capai itu\n\n"
+    "_Sistemnya sangat terlindungi._\n"
+    "_Yang perlu dijaga: disiplin, bukan keberanian._",
+
+    "📅 *Statistik Per Hari — Maret 2026*\n\n"
+    "📅 Senin    : Normal\n"
+    "📅 Selasa   : Normal\n"
+    "⚠️ Rabu     : Hati-hati (Crude Oil Report)\n"
+    "📅 Kamis    : Normal\n"
+    "🏆 Jumat    : *WR ~62.5%* — hari terbaik\n\n"
+    "_Data ini adalah edge yang nyata._\n"
+    "_Maksimalkan Jumat. Hati-hati Rabu._\n"
+    "_Ikuti sistem hari lainnya._",
+]
+
 async def kirim(bot: Bot, sesi: str):
-    teks = random.choice(PESAN[sesi]) + get_footer()
+    if sesi in ["quotes", "quotes2"]:
+        kategori = random.choice(list(QUOTES.keys()))
+        teks = random.choice(QUOTES[kategori])
+    elif sesi == "statistik":
+        teks = random.choice(STATISTIK)
+    else:
+        teks = random.choice(PESAN[sesi])
     try:
-        await bot.send_message(chat_id=CHAT_ID, text=teks, parse_mode="Markdown")
+        await bot.send_message(
+            chat_id=CHAT_ID,
+            text=teks + get_footer(),
+            parse_mode="Markdown"
+        )
         log.info(f"✅ [{sesi}] terkirim")
     except Exception as e:
         log.error(f"❌ [{sesi}] gagal: {e}")
@@ -393,48 +492,71 @@ async def kirim(bot: Bot, sesi: str):
 # ── Commands ──────────────────────────────────────────────────────────────────
 async def cmd_start(update, context):
     await update.message.reply_text(
-        "🤖 *Trading Mindset Bot — Candra* aktif!\n\n"
-        "📅 *Jadwal notifikasi harian:*\n"
-        "• 06:00 — Mindset pagi\n"
-        "• 10:00 — Fokus siang\n"
-        "• 14:00 — Pre-session sore\n"
-        "• 20:00 — 30 menit sebelum NY session\n"
-        "• 23:00 — Evaluasi & istirahat\n\n"
+        "🤖 *Trading Mindset Bot* aktif!\n\n"
+        "📅 *Jadwal harian:*\n"
+        "• 06:00 — Motivasi & mindset pagi\n"
+        "• 10:00 — Quotes trading random\n"
+        "• 14:00 — Quotes mindset & disiplin\n"
+        "• 20:00 — Statistik & gambaran angka\n"
+        "• 22:00 — Evaluasi & renungan malam\n\n"
         "📌 *Commands:*\n"
-        "/test — Coba pesan random sekarang\n"
-        "/progress — Cek progress Rp 1M\n"
-        "/plan — Review trading plan kamu\n"
-        "/compound — Simulasi compound\n\n"
-        "🎯 Target: *Rp 1 Miliar — Oktober 2026*\n"
+        "/quote — Quotes random sekarang\n"
+        "/risk — Quotes risk management\n"
+        "/compound — Quotes & simulasi compounding\n"
+        "/mindset — Quotes mindset trading\n"
+        "/disiplin — Quotes disiplin\n"
+        "/umroh — Motivasi Umroh keluarga\n"
+        "/plan — Review trading plan\n"
+        "/progress — Progress Rp 1M\n"
+        "/test — Pesan random sekarang\n\n"
+        "🎯 *Target: Rp 1 Miliar — Oktober 2026*\n"
         "🕌 Umroh untuk 4 orang keluarga",
         parse_mode="Markdown"
     )
 
-async def cmd_test(update, context):
-    sesi = random.choice(list(PESAN.keys()))
-    teks = random.choice(PESAN[sesi]) + get_footer()
+async def cmd_quote(update, context):
+    kategori = random.choice(list(QUOTES.keys()))
+    teks = random.choice(QUOTES[kategori]) + get_footer()
     await update.message.reply_text(teks, parse_mode="Markdown")
 
-async def cmd_progress(update, context):
-    bal    = 311_300_000
-    target = 1_000_000_000
-    pct    = bal / target * 100
-    bar    = "█" * int(pct/5) + "░" * (20 - int(pct/5))
-    await update.message.reply_text(
-        f"📊 *Progress Rp 1 Miliar*\n\n"
-        f"💰 Balance : Rp {bal:>15,.0f}\n"
-        f"🎯 Target  : Rp {target:>15,.0f}\n"
-        f"📈 Progress: [{bar}] {pct:.1f}%\n\n"
-        f"📅 Target bulan  : Oktober 2026\n"
-        f"⏳ Estimasi sisa : ~6 bulan\n"
-        f"📈 Butuh/bulan   : ~5% compound\n\n"
-        f"🕌 *Umroh 4 orang — tetap di jalur!*",
-        parse_mode="Markdown"
-    )
+async def cmd_risk(update, context):
+    teks = random.choice(QUOTES["risk_management"]) + get_footer()
+    await update.message.reply_text(teks, parse_mode="Markdown")
+
+async def cmd_compound(update, context):
+    # 50% chance kirim quote, 50% kirim simulasi
+    if random.random() > 0.5:
+        teks = random.choice(QUOTES["compounding"]) + get_footer()
+    else:
+        bal, target, rate = 311_300_000, 1_000_000_000, 0.05
+        rows, b = "", bal
+        now = datetime.now(WIB)
+        for i in range(1, 13):
+            b *= (1 + rate)
+            m = (now.month - 1 + i) % 12 + 1
+            y = now.year + (now.month - 1 + i) // 12
+            bln = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"][m-1]
+            flag = " ✅" if b >= target else ""
+            rows += f"• {bln} {y}: Rp {b:,.0f}{flag}\n"
+            if b >= target: break
+        teks = f"🧮 *Simulasi Compound 5%/bulan*\n_(dari Rp {bal:,.0f})_\n\n{rows}\n💡 Compound bekerja kalau modal dijaga.\n🛡️ Jaga drawdown = jaga compounding." + get_footer()
+    await update.message.reply_text(teks, parse_mode="Markdown")
+
+async def cmd_mindset(update, context):
+    teks = random.choice(QUOTES["mindset"]) + get_footer()
+    await update.message.reply_text(teks, parse_mode="Markdown")
+
+async def cmd_disiplin(update, context):
+    teks = random.choice(QUOTES["disiplin"]) + get_footer()
+    await update.message.reply_text(teks, parse_mode="Markdown")
+
+async def cmd_umroh(update, context):
+    teks = random.choice(QUOTES["umroh"]) + get_footer()
+    await update.message.reply_text(teks, parse_mode="Markdown")
 
 async def cmd_plan(update, context):
     await update.message.reply_text(
-        "📋 *Trading Plan Candra — April 2026*\n\n"
+        "📋 *Trading Trading Plan — April 2026*\n\n"
         "⏰ *Session:* NY Session (20:30–22:30 WIB)\n"
         "💹 *Pair:* XAUUSD\n"
         "🎯 *TP:* Fibonacci 1.618\n"
@@ -456,30 +578,29 @@ async def cmd_plan(update, context):
         parse_mode="Markdown"
     )
 
-async def cmd_compound(update, context):
-    bal    = 311_300_000
-    target = 1_000_000_000
-    rate   = 0.05
-    rows   = ""
-    b      = bal
-    now    = datetime.now(WIB)
-    for i in range(1, 10):
-        b *= (1 + rate)
-        m  = (now.month - 1 + i) % 12 + 1
-        y  = now.year + (now.month - 1 + i) // 12
-        bln = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"][m-1]
-        flag = " ✅" if b >= target else ""
-        rows += f"• {bln} {y}: Rp {b:,.0f}{flag}\n"
-        if b >= target:
-            break
+async def cmd_progress(update, context):
+    bal, target = 311_300_000, 1_000_000_000
+    pct = bal / target * 100
+    bar = "█" * int(pct/5) + "░" * (20 - int(pct/5))
     await update.message.reply_text(
-        f"🧮 *Simulasi Compound 5%/bulan*\n"
-        f"_(dari Rp {bal:,.0f})_\n\n"
-        f"{rows}\n"
-        f"💡 Compound bekerja kalau modal dijaga.\n"
-        f"🛡️ Jaga drawdown = jaga compounding.",
+        f"📊 *Progress Rp 1 Miliar*\n\n"
+        f"💰 Balance : Rp {bal:>15,.0f}\n"
+        f"🎯 Target  : Rp {target:>15,.0f}\n"
+        f"📈 Progress: [{bar}] {pct:.1f}%\n\n"
+        f"📅 Target  : Oktober 2026\n"
+        f"⏳ Sisa    : ~6 bulan\n"
+        f"📈 Butuh   : ~5%/bulan compound\n\n"
+        f"🕌 *Umroh 4 orang — tetap di jalur!*",
         parse_mode="Markdown"
     )
+
+async def cmd_test(update, context):
+    kategori = random.choice(list(QUOTES.keys()) + list(PESAN.keys()))
+    if kategori in QUOTES:
+        teks = random.choice(QUOTES[kategori])
+    else:
+        teks = random.choice(PESAN[kategori])
+    await update.message.reply_text(teks + get_footer(), parse_mode="Markdown")
 
 # ── Scheduler ─────────────────────────────────────────────────────────────────
 def setup_scheduler(app):
@@ -496,11 +617,19 @@ def setup_scheduler(app):
 def main():
     log.info("🚀 Bot starting...")
     app = Application.builder().token(BOT_TOKEN).build()
-    app.add_handler(CommandHandler("start",    cmd_start))
-    app.add_handler(CommandHandler("test",     cmd_test))
-    app.add_handler(CommandHandler("progress", cmd_progress))
-    app.add_handler(CommandHandler("plan",     cmd_plan))
-    app.add_handler(CommandHandler("compound", cmd_compound))
+    for cmd, handler in [
+        ("start",    cmd_start),
+        ("test",     cmd_test),
+        ("quote",    cmd_quote),
+        ("risk",     cmd_risk),
+        ("compound", cmd_compound),
+        ("mindset",  cmd_mindset),
+        ("disiplin", cmd_disiplin),
+        ("umroh",    cmd_umroh),
+        ("plan",     cmd_plan),
+        ("progress", cmd_progress),
+    ]:
+        app.add_handler(CommandHandler(cmd, handler))
     setup_scheduler(app)
     log.info("✅ Bot siap")
     app.run_polling(drop_pending_updates=True)
