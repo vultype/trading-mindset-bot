@@ -11,7 +11,7 @@ from telegram import Bot
 from telegram.ext import Application, CommandHandler, ContextTypes
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-BOT_TOKEN = os.environ.get("BOT_TOKEN", "8626750521:AAGWL7IZqHg62hxrbDPiVzN_jMzrwr4v6v4")
+BOT_TOKEN = os.environ.get("BOT_TOKEN", "8626750521:AAFC-voApZlqCd-uHhZNCaQQ5Gj9Kgjjegg")
 CHAT_ID   = os.environ.get("CHAT_ID",   "5488406480")
 WIB       = ZoneInfo("Asia/Jakarta")
 
